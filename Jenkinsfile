@@ -1,0 +1,60 @@
+@Library('sumLibrary')_
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('SCM')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newGit("Maven")
+                }
+            }
+        }
+        stage('Build')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.mavenBuild()
+                }
+            }
+        }
+        stage('Deployment')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.deployment("SharedLibrary1","172.31.47.134","testapp3")
+                }
+            }
+        }
+        stage('Testing')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newGit1("FunctionalTesting")
+                    cicd.ConTesting("SharedLibrary1")
+                }
+            }
+        }
+        stage('Delivery')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.deployment("SharedLibrary1","172.31.35.97","proddapp3")
+                }
+            }
+        }
+    }
+    
+}
